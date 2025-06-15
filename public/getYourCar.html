@@ -1,0 +1,330 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اطلب سيارتك</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #1a3e72;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+            margin-bottom: 30px;
+        }
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        .form-title {
+            font-size: 1.5rem;
+            color: #1a3e72;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        .form-control:focus {
+            border-color: #1a3e72;
+            outline: none;
+        }
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: left 15px center;
+            background-size: 1em;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: #1a3e72;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #0d2a4d;
+        }
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        .payment-info {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 20px;
+            border: 1px dashed #ccc;
+        }
+        .payment-info h3 {
+            color: #1a3e72;
+            margin-bottom: 10px;
+        }
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .step {
+            display: flex;
+            gap: 15px;
+        }
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background-color: #1a3e72;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        .step-content {
+            flex: 1;
+        }
+        .step-content h3 {
+            color: #1a3e72;
+            margin-bottom: 8px;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 50px;
+        }
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>اطلب سيارتك</h1>
+            <p>استيراد السيارات حسب الطلب بكل سهولة وموثوقية</p>
+        </header>
+
+        <div class="form-container">
+            <h2 class="form-title">نموذج طلب استيراد السيارة</h2>
+            <form id="carImportForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="carType">نوع السيارة</label>
+                        <select id="carType" class="form-control" required>
+                            <option value="">اختر نوع السيارة</option>
+                            <option value="sedan">سيدان</option>
+                            <option value="suv">SUV</option>
+                            <option value="hatchback">هاتشباك</option>
+                            <option value="coupe">كوبيه</option>
+                            <option value="pickup">بيك أب</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="brand">الماركة</label>
+                        <select id="brand" class="form-control" required>
+                            <option value="">اختر الماركة</option>
+                            <option value="toyota">تويوتا</option>
+                            <option value="nissan">نيسان</option>
+                            <option value="bmw">بي إم دبليو</option>
+                            <option value="mercedes">مرسيدس</option>
+                            <option value="audi">أودي</option>
+                            <option value="hyundai">هيونداي</option>
+                            <option value="kia">كيا</option>
+                            <option value="other">أخرى</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="importCountry">بلد الاستيراد</label>
+                        <select id="importCountry" class="form-control" required>
+                            <option value="">اختر بلد الاستيراد</option>
+                            <option value="usa">الولايات المتحدة</option>
+                            <option value="germany">ألمانيا</option>
+                            <option value="japan">اليابان</option>
+                            <option value="korea">كوريا الجنوبية</option>
+                            <option value="uae">الإمارات</option>
+                            <option value="other">أخرى</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="model">الموديل</label>
+                        <input type="text" id="model" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="condition">الحالة</label>
+                        <select id="condition" class="form-control" required>
+                            <option value="">اختر حالة السيارة</option>
+                            <option value="new">جديدة</option>
+                            <option value="used">مستخدمة</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="budget">الميزانية (ريال سعودي)</label>
+                        <input type="number" id="budget" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="city">المدينة</label>
+                        <input type="text" id="city" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">رقم الجوال</label>
+                        <input type="tel" id="phone" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="payment-info">
+                    <h3>معلومات الدفع</h3>
+                    <p>بعد تعبئة النموذج سيتم التواصل معك لتأكيد الطلب ودفع مبلغ الجدية 2000 ريال</p>
+                </div>
+
+                <button type="submit" class="btn btn-block" style="margin-top: 20px;">إرسال الطلب</button>
+            </form>
+        </div>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>إرسال الطلب</h3>
+                    <p>بعد تعبئة النموذج ودفع مبلغ الجدية، يتم إرسال الطلب إلى المورد تلقائياً أو عن طريقنا</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>رد المورد</h3>
+                    <p>المورد يرد بقبول أو رفض الطلب مع تحديد مدة البحث عن السيارة المطلوبة</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>متابعة الحالة</h3>
+                    <p>يمكنك متابعة حالة طلبك من خلال لوحة التحكم أو عبر الجوال</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>العثور على السيارة</h3>
+                    <p>في حال العثور على السيارة، يتم إرسال الصور والفيديوهات لك للموافقة المبدئية</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <h3>إتمام الصفقة</h3>
+                    <p>بعد الموافقة يتم إرسال العقد وإتمام التحويل المالي حسب شروط العقد</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>جميع الحقوق محفوظة &copy; 2023 اطلب سيارتك</p>
+    </footer>
+
+    <script>
+        document.getElementById('carImportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                carType: document.getElementById('carType').value,
+                brand: document.getElementById('brand').value,
+                importCountry: document.getElementById('importCountry').value,
+                model: document.getElementById('model').value,
+                condition: document.getElementById('condition').value,
+                budget: document.getElementById('budget').value,
+                city: document.getElementById('city').value,
+                phone: document.getElementById('phone').value
+            };
+            
+            // Here you would normally send the data to your server
+            console.log('Form submitted:', formData);
+            
+            // Show success message
+            alert('تم إرسال طلبك بنجاح! سيتم التواصل معك قريباً لتأكيد الطلب ودفع مبلغ الجدية.');
+            
+            // Reset form
+            this.reset();
+        });
+    </script>
+</body>
+</html>

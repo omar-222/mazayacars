@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاسبة الرسوم الجمركية للسيارات</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- swal js -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <!-- Add this to your head section -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="./calcStyle.css">
+
+    <link rel="stylesheet" href="https://cdn.moyasar.com/mpf/1.15.0/moyasar.css" />
+    <script src="https://cdn.moyasar.com/mpf/1.15.0/moyasar.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>حاسبة الرسوم الجمركية للسيارات</h1>
+            <p>احسب رسوم وضريبة سيارتك المستوردة إلى السعودية بسهولة</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="main-content">
+                <div class="calculator-section">
+                    <h2 class="section-title">بيانات السيارة</h2>
+                    
+                    <div class="filter-section">
+                        <div class="filter-row">
+                            <div class="filter-group">
+                                <label for="manufacturerFilter">ماركة السيارة</label>
+                                <select id="manufacturerFilter" class="filter-select">
+                                    <option value="">اختر الماركة</option>
+                                </select>
+                            </div>
+
+             
+
+
+
+                            <div class="filter-group">
+                                <label for="modelFilter">موديل السيارة</label>
+                                <select id="modelFilter" class="filter-select">
+                                    <option value="">اختر الماركة أولاً</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="filter-row">
+                            <div class="filter-group">
+                                <label for="subModelFilter">الطراز</label>
+                                <select id="subModelFilter" class="filter-select">
+                                    <option value="">اختر الموديل أولاً</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="yearFilter">سنة الإنتاج</label>
+                                <select id="yearFilter" class="filter-select">
+                                    <option value="">اختر الموديل أولاً</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="carList" class="car-list">
+                        <div class="loading">جاري تحميل بيانات السيارات...</div>
+                    </div>
+
+                    <div id="selectedCarDetails" class="car-details-container" style="display: none;">
+                        <h3 class="cars-info" style="margin-bottom: 15px; color: var(--primary);">تفاصيل السيارة المحددة</h3>
+                        <div class="cars-details">
+
+                        </div>
+
+                       
+                       
+                    </div>
+
+
+                    <div class="important-note" style="margin-top: 30px; padding: 20px; background: #eaf7ff; border: 1px solid #b3e5fc; border-radius: 8px; color: #0275d8; font-size: 1rem;">
+                        <h3 style="font-size: 1.1rem; margin-bottom: 10px; color: #0275d8;">تنويه مهم قبل اتخاذ قرار الشراء:</h3>
+                        <p style="margin: 0; line-height: 1.6;">
+                            نذكّر العميل الكريم بأن يستخير الله قبل اتخاذ قرار استيراد السيارة أو شرائها، 
+                            فالاستخارة باب التوفيق، وما خاب من استخار.
+                        </p>
+                    </div>
+
+
+                    <div class="contact-section" style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px; border: 1px solid #eee;">
+                        <h3 style="font-size: 1.1rem; margin-bottom: 15px;">إرسال الفاتورة</h3>
+                        
+                        <div class="form-group">
+                            <label for="emailInput">البريد الإلكتروني</label>
+                            <input type="email" id="emailInput" placeholder="أدخل بريدك الإلكتروني">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="whatsappInput">رقم الواتساب</label>
+                            <input type="tel" id="whatsappInput" placeholder="أدخل رقم الواتساب مع رمز الدولة">
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px; text-align: center; font-size: 0.9rem; color: #7f8c8d;">
+                        رسوم خدمة احتساب الفاتورة الجمركية: <span style="color: var(--accent); font-weight: bold;">10 ريال فقط</span> – نوفر لك التفاصيل الكاملة والتكلفة المتوقعة بكل دقة.
+                        <button type="button" id="calculateBtn" style="margin-top: 20px;">
+                            ادفع الان
+                        </button>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="result-section" id="resultSection">
+                <h2 class="section-title">نتيجة الحساب</h2>
+                
+                <div id="carInfo" style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                    <div style="font-weight: 600; margin-bottom: 5px;">بيانات السيارة:</div>
+                    <div id="carDetails"></div>
+                </div>
+                
+                <div class="result-item">
+                    <span class="result-label">سعر السيارة :</span>
+                    <span class="result-value" id="basePrice">0 ريال</span>
+                </div>
+                
+                <div class="result-item">
+                    <span class="result-label">الرسوم الجمركية (5%):</span>
+                    <span class="result-value" id="customsFee">0 ريال</span>
+                </div>
+                
+                <div class="result-item">
+                    <span class="result-label">الإجمالي قبل الضريبة:</span>
+                    <span class="result-value" id="totalBeforeVat">0 ريال</span>
+                </div>
+                
+                <div class="result-item">
+                    <span class="result-label">ضريبة القيمة المضافة (15%):</span>
+                    <span class="result-value" id="vatFee">0 ريال</span>
+                </div>
+                
+                <div class="result-item total">
+                    <span class="result-label">إجمالي الرسوم (جمارك + ضريبة): </span>
+                    <span class="result-value" id="totalPrice">0 ريال</span>
+                </div>
+
+                <div class="action-buttons" style="margin-top: 30px;">
+                    <button class="btn-secondary" id="backToCalculator">العودة إلى الحاسبة</button>
+                    <button class="btn-secondary" id="printBtn">طباعة النتيجة</button>
+                </div>
+               
+            </div>
+
+
+
+
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>جميع الحقوق محفوظة &copy; 2025 - حاسبة الرسوم الجمركية للسيارات</p>
+        </div>
+    </footer>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+        <div style="background: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px;">
+            <h2 style="margin-bottom: 20px; color: #2c3e50; text-align: center;">الدفع الإلكتروني</h2>
+            <div id="moyasar-payment"></div>
+            <button id="closePaymentModal" style="margin-top: 20px; width: 100%; background: #e74c3c; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">إلغاء الدفع</button>
+        </div>
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+
+
+
+
+
+
+
+        const manufacturerFilter = document.getElementById('manufacturerFilter');
+        const modelFilter = document.getElementById('modelFilter');
+        const subModelFilter = document.getElementById('subModelFilter');
+        const yearFilter = document.getElementById('yearFilter');
+        const carList = document.getElementById('carList');
+        const selectedCarDetails = document.getElementById('selectedCarDetails');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const resultSection = document.getElementById('resultSection');
+        
+        let allCars = [];
+        // let selectedCar = null;
+
+        // API base URL
+
+ 	    // let mainHost = "https://mazayacars.site";
+
+        // let mainHost = "https://mazexcars.onrender.com";
+        let mainHost = "http://localhost:3000"; // For local testing
+
+
+        // let mainHost = "https://p45jfr09-3000.uks1.devtunnels.ms";
+        const apiVersion = 'v1'; // Using v1 endpoints with dataMap structure
+
+        // Check for payment reference in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const refIdFromUrl = urlParams.get('ref');
+
+        if (refIdFromUrl) {
+            try {
+                const fetchRefData = async () => {
+                    const response = await fetch(`${mainHost}/api/get-payment?ref=${encodeURIComponent(refIdFromUrl)}`);
+                    if (!response.ok) {
+                        swal("خطأ", "حدث خطأ في استدعاء البيانات، ربما بسبب فشل عملية الدفع", "error");
+                        // reset all url params
+                        const url = new URL(window.location.href);
+                        url.search = ''; // Clear all query parameters
+                        window.history.replaceState({}, document.title, url.toString());
+
+                        resetPaymentButton();
+                        throw new Error('Failed to fetch reference data');
+                    }
+                    const refData = await response.json();
+
+                    if (refData.success) {
+                        console.log(refData)
+                        showCalculationResults(refData);
+                    } else {
+                        console.error('Error fetching reference data:', refData.error);
+                        swal("خطأ", "حدث خطأ أثناء استرجاع بيانات الدفع", "error");
+                    }
+                };
+
+                fetchRefData();
+            } catch (error) {
+                console.error('Error fetching reference data:', error);
+            }
+        }
+
+
+
+
+
+   
+
+        // Populate manufacturers dropdown from API v1
+        async function populateManufacturers() {
+            try {
+                const response = await fetch(`${mainHost}/api/${apiVersion}/manufacturers`);
+                if (!response.ok) throw new Error('Failed to fetch manufacturers');
+                const manufacturers = await response.json();
+                
+                manufacturerFilter.innerHTML = '<option value="">اختر الماركة</option>';
+                manufacturers.forEach(manufacturer => {
+                    const option = document.createElement('option');
+                    option.value = manufacturer;
+                    option.textContent = manufacturer;
+                    manufacturerFilter.appendChild(option);
+                });
+                
+                // Reset other filters
+                modelFilter.innerHTML = '<option value="">اختر الماركة أولاً</option>';
+                subModelFilter.innerHTML = '<option value="">اختر الموديل أولاً</option>';
+                yearFilter.innerHTML = '<option value="">اختر الماركة أولاً</option>';
+            } catch (error) {
+                console.error('Error populating manufacturers:', error);
+            }
+        }
+
+
+
+
+
+        // Initialize manufacturer filter
+ 
+        
+        // Populate models based on selected manufacturer from API v1
+        async function populateModels() {
+            const manufacturer = manufacturerFilter.value;
+            if (!manufacturer) return;
+            
+            try {
+                const response = await fetch(`${mainHost}/api/${apiVersion}/models?manufacturer=${encodeURIComponent(manufacturer)}`);
+                if (!response.ok) throw new Error('Failed to fetch models');
+                const models = await response.json();
+                
+                modelFilter.innerHTML = '<option value="">اختر الموديل</option>';
+                models.forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model;
+                    option.textContent = model;
+                    modelFilter.appendChild(option);
+                });
+                
+                // Reset sub-model and year filters
+                subModelFilter.innerHTML = '<option value="">اختر الموديل أولاً</option>';
+                yearFilter.innerHTML = '<option value="">اختر الموديل أولاً</option>';
+            } catch (error) {
+                console.error('Error populating models:', error);
+            }
+        }
+        
+        // Populate sub-models based on selected model from API v1
+        async function populateSubModels() {
+            const manufacturers = manufacturerFilter.value;
+            const model = modelFilter.value;
+            
+            if (!model) return;
+            
+            try {
+                const response = await fetch(`${mainHost}/api/${apiVersion}/sub-models?model=${encodeURIComponent(model)}&manufacturer=${encodeURIComponent(manufacturers)}`);
+                if (!response.ok) throw new Error('Failed to fetch submodels');
+                const subModels = await response.json();
+                
+                subModelFilter.innerHTML = '<option value="">اختر الطراز</option>';
+                if (subModels.length > 0) {
+                    subModels.forEach(subModel => {
+                        const option = document.createElement('option');
+                        option.value = subModel;
+                        option.textContent = subModel;
+                        subModelFilter.appendChild(option);
+                    });
+                } else {
+                    subModelFilter.innerHTML = '<option value="">لا يوجد طراز فرعي</option>';
+                }
+                
+                // Populate years
+                populateYears();
+            } catch (error) {
+                console.error('Error populating submodels:', error);
+            }
+        }
+        
+
+
+
+        // Populate years based on selected model from API v1
+        async function populateYears() {
+            const manufacturers = manufacturerFilter.value;
+            const model = modelFilter.value;
+            const subModel = subModelFilter.value;
+           
+            
+
+
+            if (!manufacturers || !subModel || !model) return;
+            
+            try {
+                const response = await fetch(`${mainHost}/api/${apiVersion}/years?model=${encodeURIComponent(model)}&manufacturer=${encodeURIComponent(manufacturers)}&submodel=${encodeURIComponent(subModel)}`);
+                if (!response.ok) throw new Error('Failed to fetch years');
+                const years = await response.json();
+                
+                yearFilter.innerHTML = '<option value="">اختر سنة الإنتاج</option>';
+                years.forEach(year => {
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.textContent = year;
+                    yearFilter.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error populating years:', error);
+            }
+        }
+
+
+
+
+
+
+        let selectedCars=[];
+        // Filter cars based on all selected filters using API
+        async function filterCars() {
+            const manufacturer = manufacturerFilter.value;
+            const model = modelFilter.value;
+            const subModel = subModelFilter.value;
+            const year = yearFilter.value;
+            let carsDetails = document.querySelector('.cars-details');
+            let carsInfo = document.querySelector('.cars-info');
+
+
+
+
+            try {
+                let url = `${mainHost}/api/cars?`;
+                if (manufacturer) url += `manufacturer=${encodeURIComponent(manufacturer)}&`;
+                if (model) url += `model=${encodeURIComponent(model)}&`;
+                if (subModel) url += `subModel=${encodeURIComponent(subModel)}&`;
+                if (year) url += `year=${encodeURIComponent(year)}`;
+                
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Failed to filter cars');
+                const filteredCars = await response.json();
+                selectedCars= filteredCars;
+                selectedCarDetails.style.display = 'block';
+
+
+                if (filteredCars.length === 0) {
+
+                    carsInfo.textContent = 'لا توجد سيارات مطابقة للمعايير المحددة';
+                    carsDetails.innerHTML = '';
+    
+                    return;
+                } else if( filteredCars.length === 1) {
+
+                    carsInfo.textContent = 'سيارة واحدة مطابقة';
+
+
+                    carsDetails.innerHTML = `
+                        <div class="car-details-item" style="padding: 15px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                            <div style="font-size: 1.1rem; font-weight: bold; color: #2c3e50; margin-bottom: 10px;">${filteredCars[0].manufacturer} - ${filteredCars[0].model}</div>
+                            <div style="font-size: 1rem; color: #7f8c8d; margin-bottom: 8px;"><strong>الطراز الفرعي:</strong> ${filteredCars[0].sub_model || 'غير متوفر'}</div>
+                            <div style="font-size: 1rem; color: #7f8c8d; margin-bottom: 8px;"><strong>سنة الإنتاج:</strong> ${filteredCars[0].production_year}</div>
+                        </div>
+                    `;
+
+
+              
+                } else if (filteredCars.length > 1) {
+
+                    carsInfo.textContent = `سيارة واحدة مطابقة مع عدة فئات `;
+                    carsDetails.innerHTML = `
+                        <div class="car-details-item" style="padding: 20px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 10px; background: linear-gradient(135deg, #f9f9f9, #ffffff); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                            <div style="font-size: 1.2rem; font-weight: bold; color: #2c3e50; margin-bottom: 10px;">${filteredCars[0].manufacturer} - ${filteredCars[0].model}</div>
+                            <div style="font-size: 1rem; color: #7f8c8d; margin-bottom: 10px;">${filteredCars[0].sub_model || 'غير متوفر'} | ${filteredCars[0].production_year}</div>
+                            <div style="font-size: 0.95rem; color: #34495e; margin-bottom: 10px;">
+                                <strong>أرقام الشاسيه:</strong>
+                                <ul style="margin: 0; padding-left: 0; list-style: none; color: #16a085;">
+                                    ${filteredCars.map(car => `<li style="margin-bottom: 5px;">${car.full_chassis || 'غير متوفر'}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+
+                    const message = document.createElement('div');
+                    message.style.marginTop = '15px';
+                    message.style.padding = '10px';
+                    message.style.background = '#eaf7ff';
+                    message.style.border = '1px solid #b3e5fc';
+                    message.style.borderRadius = '8px';
+                    message.style.color = '#0275d8';
+                    message.style.fontSize = '0.9rem';
+                    message.innerHTML = `
+                        <p style="margin: 0;">ملاحظة: أرقام الشاسيه المذكورة هنا تمثل اختلاف فئة السيارة أو مواصفاتها. عند الدفع، سيتم تزويدك بحسبة جميع فئات السيارة المتاحة.</p>
+                    `;
+                    carsDetails.appendChild(message);
+                    
+
+
+                 
+                } else {
+                    selectedCarDetails.style.display = 'none';
+                }
+                
+             
+            } catch (error) {
+                console.error('Error filtering cars:', error);
+                carList.innerHTML = '<div class="error-message">حدث خطأ أثناء تصفية السيارات.</div>';
+            }
+        }
+        
+      
+
+        // Payment verification and calculation
+        async function calculateFees() {
+            // reset all url params
+            let url = new URL(window.location.href);
+            url.search = ''; // Clear all query parameters
+            window.history.replaceState({}, document.title, url.toString());
+
+            let refId = Math.random().toString(36).substring(2, 15); // Generate a random reference ID
+
+            if (!selectedCars || selectedCars.length === 0) {
+                swal("تنبيه", "يرجى اختيار سيارة من القائمة قبل متابعة عملية الدفع.", "warning");
+                return;
+            } 
+
+            const email = document.getElementById('emailInput').value;
+            const whatsapp = document.getElementById('whatsappInput').value;
+
+            if (!email && !whatsapp) {
+                swal("تنبيه", "الرجاء إدخال البريد الإلكتروني أو رقم الواتساب", "warning");
+                return;
+            }
+
+            // Show loading state
+            calculateBtn.disabled = true;
+            calculateBtn.innerHTML = '<span class="loading-spinner"></span> جاري التحميل...';
+
+            // Show payment modal
+            const paymentModal = document.getElementById('paymentModal');
+            paymentModal.style.display = 'flex';
+            
+            // Clear any previous payment form
+            const paymentContainer = document.getElementById('moyasar-payment');
+            paymentContainer.innerHTML = '';
+
+            
+            console.log('Selected Car:', selectedCars);
+
+
+            try {
+                // Initialize Moyasar payment form
+                Moyasar.init({
+                    element: paymentContainer,
+                    amount: 1000,
+                    currency: 'SAR',
+                    description: 'رسوم خدمة حساب الجمارك للسيارة',
+                    publishable_api_key: 'pk_test_EysVWZ4Y48wwi17rifqMegSZPVivU4p2HCJsWFWC',
+                    callback_url: window.location.href+"?ref="+ refId,
+                    metadata: {
+                        refId: refId,
+                        data:{
+                            email: email,
+                            whatsapp: whatsapp,
+                            car_details: {
+                                manufacturer: selectedCars[0].manufacturer,
+                                model: selectedCars[0].model,
+                                sub_model: selectedCars[0].sub_model || 'غير متوفر',
+                                year: selectedCars[0].production_year,
+                            }
+                        },
+                    },
+                    methods: ['creditcard', 'stcpay'],
+                    on_completed: async function(payment) {
+                        paymentModal.style.display = 'none';
+                        resetPaymentButton();
+
+                        try {
+                            // First save the payment
+                            const saveResponse = await fetch(`${mainHost}/api/save-payment`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    payment: payment,
+                                    refId: refId,
+                                    data:{
+                                        email: email,
+                                        whatsapp: whatsapp,
+                                        car_details: {
+                                            manufacturer: selectedCars[0].manufacturer,
+                                            model: selectedCars[0].model,
+                                            sub_model: selectedCars[0].sub_model || 'غير متوفر',
+                                            year: selectedCars[0].production_year,
+                                        }
+                                    },
+                                }),
+                            });
+
+                            const saveResult = await saveResponse.json();
+                            
+                            if (!saveResult.success) {
+                                console.error('Failed to save payment:', saveResult.error);
+                                swal("خطأ", "حدث خطأ أثناء حفظ بيانات الدفع", "error");
+                                return;
+                            }
+
+                            console.log('Payment saved successfully:', saveResult);
+
+                   
+                       
+                         
+                        } catch (error) {
+                            console.error('Payment processing error:', error);
+                            swal("خطأ", "حدث خطأ أثناء معالجة الدفع", "error");
+                        }
+                    },
+                    on_failed: function(payment) {
+                        swal("فشل الدفع", "فشلت عملية الدفع، يرجى المحاولة مرة أخرى: " + (payment.message || ""), "error");
+                        paymentModal.style.display = 'none';
+                        resetPaymentButton();
+                    }
+                });
+            } catch (error) {
+                console.error('Payment initialization error:', error);
+                swal("خطأ", "حدث خطأ أثناء تحميل نموذج الدفع", "error");
+                paymentModal.style.display = 'none';
+                resetPaymentButton();
+            }
+        }
+
+        // Show calculation results from API response
+        function showCalculationResults(result) {
+
+
+            console.log('Calculation Result:', result); // Log the entire result object for debugging
+            // Hide calculator section
+            document.querySelector('.calculator-section').style.display = 'none';
+            document.querySelector('.result-section').style.display = 'block';
+
+            resultSection.innerHTML = ''; // Clear previous results
+
+            console.log('Calculation Result:', result.feesBreakdown); 
+            resultSection.innerHTML=`${result.feesBreakdown.message}`;
+
+
+            resultSection.innerHTML+=`
+            
+            
+            <div class="important-notes" style="margin-top: 20px; padding: 20px; background: #e8f5e9; border: 1px solid #c8e6c9; border-radius: 8px; color: #2e7d32; font-size: 1rem;">
+                <h3 style="font-size: 1.2rem; margin-bottom: 15px; color: #2e7d32;">ملاحظات مهمة حول التسعيرة الجمركية والتكاليف الجانبية:</h3>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li style="margin-bottom: 15px;">
+                        <strong>1. تنويه بخصوص الفئات المختلفة:</strong>
+                        <p style="margin: 5px 0; line-height: 1.6;">
+                            بعض السيارات لها أكثر من فئة (مثل: ستاندرد – فل كامل – 4 سلندر – 6 سلندر…)،
+                            لذلك يظهر النظام جميع الفئات المرتبطة بالموديل والطراز المطلوب.
+                            للتأكد من الفئة الصحيحة، يُرجى مطابقة أول 8 أرقام من رقم الشاسيه (VIN) مع الفئة المناسبة في التسعيرة.
+                        </p>
+                    </li>
+                    <li style="margin-bottom: 15px;">
+                        <strong>2. اعتماد الفاتورة في الجمارك:</strong>
+                        <p style="margin: 5px 0; line-height: 1.6;">
+                            الجمارك السعودية تقبل الفاتورة إذا كانت مساوية لتسعيرتهم أو أقل منها بما لا يتجاوز 10٪.
+                        </p>
+                        <ul style="margin: 5px 0 0 20px; padding: 0; list-style: disc;">
+                            <li>تسعيرة الجمارك الرسمية: 100,000 ريال</li>
+                            <li>فاتورتك: 90,000 ريال أو أكثر → تُعتمد</li>
+                            <li>أقل من ذلك → سيتم الاعتماد على تسعيرة الجمارك</li>
+                        </ul>
+                    </li>
+                    <li style="margin-bottom: 15px;">
+                        <strong>3. تكاليف جانبية متوقعة داخل المملكة (تقديرية):</strong>
+                        <ul style="margin: 5px 0 0 20px; padding: 0; list-style: disc;">
+                            <li>التخليص الجمركي: من 400 إلى 700 ريال</li>
+                            <li>النقل (سطحة): من 250 إلى 400 ريال</li>
+                            <li>الوكيل الملاحي: من 480 إلى 2,500 ريال (حسب نوع الحاوية)</li>
+                            <li>رسوم الموانئ: من 70 إلى 550 ريال</li>
+                            <li>الفحص الفني: من 300 إلى 345 ريال</li>
+                            <li>تذكرة الفسح: 30 ريال</li>
+                            <li>الشحن البحري: من 1,400 إلى 1,800 دولار أمريكي (تبعًا للدولة والوقت)</li>
+                        </ul>
+                    </li>
+                </ul>
+                <p style="margin-top: 15px; line-height: 1.6; font-style: italic;">
+                    <strong>ملحوظة:</strong> هذه التكاليف تقديرية وقابلة للاختلاف من شركة لأخرى. الهدف منها مساعدتك في تكوين تصور تقريبي للتكلفة الكاملة.
+                </p>
+            </div>
+            
+            
+            `;
+
+
+
+            document.getElementById('backToCalculator').addEventListener('click', function() {
+                document.querySelector('.calculator-section').style.display = 'block';
+                document.getElementById('resultSection').style.display = 'none';
+
+                // reset all url params
+                const url = new URL(window.location.href);
+                url.search = ''; // Clear all query parameters
+                window.history.replaceState({}, document.title, url.toString());
+
+                resetPaymentButton();
+            });
+
+
+            document.getElementById('printBtn').addEventListener('click', function() {
+                window.print();
+            });
+
+            
+        
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetPaymentButton() {
+            calculateBtn.disabled = false;
+            calculateBtn.textContent = 'ادفع الان';
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('ar-SA', { 
+                style: 'currency', 
+                currency: 'SAR',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(amount);
+        }
+        
+        // Event listeners
+        manufacturerFilter.addEventListener('change', function() {
+            populateModels();
+            // filterCars();
+        });
+        
+        modelFilter.addEventListener('change', function() {
+            populateSubModels();
+            // filterCars();
+        });
+        
+        subModelFilter.addEventListener('change', function() {
+            populateYears();
+            // filterCars();
+        });
+        
+        yearFilter.addEventListener('change', filterCars);
+        
+        calculateBtn.addEventListener('click', calculateFees);
+        
+
+        
+      
+        
+        document.getElementById('closePaymentModal').addEventListener('click', function() {
+            document.getElementById('paymentModal').style.display = 'none';
+            resetPaymentButton();
+        });
+        
+        // Initialize
+        // fetchCarData();
+        populateManufacturers();
+    });
+</script>
+</html>
